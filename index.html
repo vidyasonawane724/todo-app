@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ToDo App</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: linear-gradient(to right, #f6e7d8, #f3ede6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .todo-container {
+            width: 360px;
+            background: white;
+            padding: 20px;
+            border-radius: 18px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #b35c1e;
+        }
+
+        .todo-item {
+            background: #eef3ea;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .delete-btn {
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .input-section {
+            display: flex;
+            margin-top: 15px;
+        }
+
+        input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 20px;
+            border: none;
+            background: #e8efe6;
+            outline: none;
+        }
+
+        button {
+            margin-left: 10px;
+            padding: 10px;
+            border-radius: 20px;
+            border: none;
+            background: #c26a2d;
+            color: white;
+            cursor: pointer;
+        }
+
+        #todo-list {
+    max-height: 250px;  
+    overflow-y: auto;    
+    margin-bottom: 10px;
+}
+    </style>
+</head>
+
+<body>
+
+<div class="todo-container">
+    <h1>ToDo App</h1>
+
+    <div id="todo-list"></div>
+
+    <div class="input-section">
+        <input type="text" id="new-todo-input" placeholder="New ToDo Item">
+        <button onclick="addToDoItem()">Add</button>
+    </div>
+</div>
+
+<script>
+
+    // Load todos on page load
+    window.onload = function () {
+        loadToDoItems();
+    };
+
+    function addToDoItem() {
+        const input = document.getElementById("new-todo-input");
+
+        const storedToDoItems = JSON.parse(
+            localStorage.getItem("TODO_ITEMS") || "[]"
+        );
+
+        storedToDoItems.push(input.value);
+
+        localStorage.setItem(
+            "TODO_ITEMS",
+            JSON.stringify(storedToDoItems)
+        );
+
+        loadToDoItems();
+
+        input.value = "";
+    }
+
+    function loadToDoItems() {
+        const list = document.getElementById("todo-list");
+        list.innerHTML = "";
+
+        const storedToDoItems = JSON.parse(
+            localStorage.getItem("TODO_ITEMS") || "[]"
+        );
+
+        for (let i = 0; i < storedToDoItems.length; i++) {
+            const div = document.createElement("div");
+            div.className = "todo-item";
+
+            const span = document.createElement("span");
+            span.innerText = storedToDoItems[i];
+
+            const btn = document.createElement("button");
+            btn.innerHTML = "🗑️";
+            btn.className = "delete-btn";
+
+            btn.onclick = function () {
+                deleteToDoItem(i);
+            };
+
+            div.appendChild(span);
+            div.appendChild(btn);
+
+            list.appendChild(div);
+        }
+    }
+
+    function deleteToDoItem(index) {
+        const storedToDoItems = JSON.parse(
+            localStorage.getItem("TODO_ITEMS") || "[]"
+        );
+
+        storedToDoItems.splice(index, 1);
+
+        localStorage.setItem(
+            "TODO_ITEMS",
+            JSON.stringify(storedToDoItems)
+        );
+
+        loadToDoItems();
+    }
+
+</script>
+
+</body>
+</html>
